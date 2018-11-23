@@ -12,7 +12,6 @@ class BookshelfBooks extends Component{
   constructor(props){
 
     super(props);
-    this.state = props;
 
   }
 
@@ -20,15 +19,26 @@ class BookshelfBooks extends Component{
     /**
      * Through destructuring assignment, recover a list of books to be rendered
      */
-    const {books} = this.state;
+    const {books} = this.props;
 
     return(
       <div className="bookshelf-books">
         <ol className="books-grid">
           {
-            books.map((book)  => {
-              return <li><Book book={book}/></li>
-            })
+
+            // If the list of books contains some book, show it
+            (books.length > 0) &&
+              books.map((book)  => {
+                  return <li><Book book={book} key={book.id}/></li>
+                })
+
+          }
+
+          {
+
+            // If the list of books is empty, show message
+            (books.length === 0) && <li>This list is empty</li>
+
           }
         </ol>
       </div>

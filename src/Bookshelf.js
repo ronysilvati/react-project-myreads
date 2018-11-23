@@ -13,7 +13,6 @@ class Bookshelf extends Component{
   constructor(props){
 
     super(props);
-    this.state = props;
 
   }
 
@@ -22,7 +21,7 @@ class Bookshelf extends Component{
      * Through destructuring assignment, recover a list of books to be rendered and
      * the title of the bookshelf
      */
-    const {title,books} = this.state;
+    const {title,books} = this.props;
 
     return (
 

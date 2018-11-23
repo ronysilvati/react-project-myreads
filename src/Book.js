@@ -9,11 +9,17 @@ import PropTypes from 'prop-types';
 class Book extends Component{
 
   constructor(props){
+
     super(props);
-    this.state = props;
+
   }
 
   render(){
+    /**
+     * Through destructuring assignment, recover a list of books to be rendered
+     */
+
+    const { book } = this.props;
 
     return(
       <div className="book">
@@ -29,8 +35,14 @@ class Book extends Component{
             </select>
           </div>
         </div>
-        <div className="book-title">To Kill a Mockingbird</div>
-        <div className="book-authors">Harper Lee</div>
+        <div className="book-title">{book.title}</div>
+        <div className="book-authors">
+          {
+            book.authors.map((author) => {
+              return `${author}`
+            }).join(', ')
+          }
+        </div>
       </div>
     );
 

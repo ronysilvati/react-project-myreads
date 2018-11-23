@@ -2,6 +2,7 @@ import React from 'react';
 // import * as BooksAPI from './BooksAPI'
 import './App.css';
 import Bookshelf from './Bookshelf';
+import * as BooksAPI from './BooksAPI';
 
 class BooksApp extends React.Component {
   state = {
@@ -11,10 +12,28 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: false
+    showSearchPage: false,
+    booksCurrentlyReading: [],
+    booksWantToRead: [],
+    booksRead: []
+  }
+
+  componentDidMount(){
+    BooksAPI.getAll().then((books)  => {
+
+      this.setState(()  => ({
+        booksWantToRead: books
+      }));
+
+    });
   }
 
   render() {
+    /**
+     * Through destructuring assignment, recover a list of books to be rendered
+     */
+    let {booksCurrentlyReading,booksWantToRead,booksRead} = this.state;
+
     return (
       <div className="app">
         {this.state.showSearchPage ? (
@@ -41,13 +60,13 @@ class BooksApp extends React.Component {
         ) : (
           <div className="list-books">
             <div className="list-books-title">
-              <h1>MyReads</h1>
+              <h1>My Reads Radar</h1>
             </div>
             <div className="list-books-content">
               <div>
-                <Bookshelf title="Currently Reading" books={[]}/>
-                <Bookshelf title="Want to Read" books={[]}/>
-                <Bookshelf title="Read" books={[]}/>
+                <Bookshelf title="Currently Reading" books={booksCurrentlyReading}/>
+                <Bookshelf title="Want to Read" books={booksWantToRead}/>
+                <Bookshelf title="Read" books={booksRead}/>
               </div>
             </div>
             <div className="open-search">
