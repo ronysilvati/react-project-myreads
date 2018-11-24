@@ -6,6 +6,7 @@ import Book from './Book';
  * @description Represents a grid of books on the bookshelf
  * @constructor
  * @param {array} books - A list of books to be added on the grid
+ * @param {function} movimentBook - The action to move a book
  */
 class BookshelfBooks extends Component{
 
@@ -19,7 +20,7 @@ class BookshelfBooks extends Component{
     /**
      * Through destructuring assignment, recover a list of books to be rendered
      */
-    const {books} = this.props;
+    const {books, movimentBook} = this.props;
 
     return(
       <div className="bookshelf-books">
@@ -29,7 +30,7 @@ class BookshelfBooks extends Component{
             // If the list of books contains some book, show it
             (books.length > 0) &&
               books.map((book)  => {
-                  return <li><Book book={book} key={book.id}/></li>
+                  return <li key={book.id}><Book book={book} movimentBook={movimentBook}/></li>
                 })
 
           }
@@ -49,7 +50,8 @@ class BookshelfBooks extends Component{
 }
 
 BookshelfBooks.propTypes = {
-  books: PropTypes.array.isRequired
+  books: PropTypes.array.isRequired,
+  movimentBook: PropTypes.func.isRequired
 }
 
 export default BookshelfBooks;

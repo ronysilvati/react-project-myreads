@@ -39,7 +39,7 @@ class BooksApp extends React.Component {
       try{
         if(book.shelf === 'currentlyReading'){
           this.setState((oldState)  => ({
-            booksWantToRead: [...oldState.booksWantToRead,book]
+            booksCurrentlyReading: [...oldState.booksCurrentlyReading,book]
           }));
         }
         else if(book.shelf === 'wantToRead'){
@@ -69,14 +69,15 @@ class BooksApp extends React.Component {
    */
   movimentBookIntoCorrectBookshelf(book,shelf){
     try{
-      if((book instanceof Object) && (shelf instanceof String)){
-        BooksAPI.update(book,book.shelf).then((data)  =>  {
+      console.log(shelf);
+      if((book instanceof Object) && shelf){
+        BooksAPI.update(book,shelf).then((data)  =>  {
           if(this.removeBookFromOldBookshelf(book)){
             book.shelf = shelf;
 
             if(book.shelf === 'currentlyReading'){
               this.setState((oldState)  => ({
-                booksWantToRead: [...oldState.booksWantToRead,book]
+                booksCurrentlyReading: [...oldState.booksCurrentlyReading,book]
               }));
             }
             else if(book.shelf === 'wantToRead'){
@@ -203,9 +204,9 @@ class BooksApp extends React.Component {
             </div>
             <div className="list-books-content">
               <div>
-                <Bookshelf title="Currently Reading" books={booksCurrentlyReading}/>
-                <Bookshelf title="Want to Read" books={booksWantToRead}/>
-                <Bookshelf title="Read" books={booksRead}/>
+                <Bookshelf title="Currently Reading" books={booksCurrentlyReading} movimentBook={this.movimentBookOnBookshelf.bind(this)}/>
+                <Bookshelf title="Want to Read" books={booksWantToRead} movimentBook={this.movimentBookOnBookshelf.bind(this)}/>
+                <Bookshelf title="Read" books={booksRead} movimentBook={this.movimentBookOnBookshelf.bind(this)}/>
               </div>
             </div>
             <div className="open-search">

@@ -6,6 +6,7 @@ import BookMovimentation from './BookMovimentation';
  * @description Represents a book
  * @constructor
  * @param {string} book - The book to be mounted on component instance
+ * @param {function} movimentBook - The action to move a book
  */
 class Book extends Component{
 
@@ -20,14 +21,14 @@ class Book extends Component{
      * Through destructuring assignment, recover a list of books to be rendered
      */
 
-    const { book } = this.props;
+    const {book, movimentBook} = this.props;
 
     return(
       <div className="book">
         <div className="book-top">
-          <div className="book-cover" style={{backgroundImage: 'url("http://books.google.com/books/content?id=PGR2AwAAQBAJ&printsec=frontcover&img=1&zoom=1&imgtk=AFLRE73-GnPVEyb7MOCxDzOYF1PTQRuf6nCss9LMNOSWBpxBrz8Pm2_mFtWMMg_Y1dx92HT7cUoQBeSWjs3oEztBVhUeDFQX6-tWlWz1-feexS0mlJPjotcwFqAg6hBYDXuK_bkyHD-y&source=gbs_api")' }}></div>
+          <div className="book-cover" style={{backgroundImage: `url("${book.imageLinks.smallThumbnail}")` }}></div>
           <div className="book-shelf-changer">
-            <BookMovimentation book={book}/>
+            <BookMovimentation book={book} movimentBook={movimentBook}/>
           </div>
         </div>
         <div className="book-title">{book.title}</div>
@@ -46,7 +47,8 @@ class Book extends Component{
 }
 
 Book.propTypes = {
-  book: PropTypes.object.isRequired
+  book: PropTypes.object.isRequired,
+  movimentBook: PropTypes.func.isRequired
 }
 
 export default Book;

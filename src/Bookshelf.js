@@ -17,6 +17,7 @@ class Bookshelf extends Component{
   }
 
   render(){
+    const { movimentBook } = this.props;
     /**
      * Through destructuring assignment, recover a list of books to be rendered and
      * the title of the bookshelf
@@ -27,7 +28,7 @@ class Bookshelf extends Component{
 
       <div className="bookshelf">
         <h2 className="bookshelf-title">{title}</h2>
-        <BookshelfBooks books={books}/>
+        <BookshelfBooks books={books} movimentBook={movimentBook}/>
       </div>
 
     );
@@ -37,7 +38,8 @@ class Bookshelf extends Component{
 
 Bookshelf.propTypes = {
   title: PropTypes.string.isRequired,
-  books: PropTypes.array.isRequired
+  books: PropTypes.array.isRequired,
+  movimentBook: PropTypes.func.isRequired
 }
 
 export default Bookshelf;
