@@ -26,7 +26,9 @@ class Book extends Component{
     return(
       <div className="book">
         <div className="book-top">
-          <div className="book-cover" style={{backgroundImage: `url("${book.imageLinks.smallThumbnail}")` }}></div>
+          <div className="book-cover" style={{backgroundImage: `url("${
+              (book.imageLinks) && book.imageLinks.smallThumbnail
+          }")` }}></div>
           <div className="book-shelf-changer">
             <BookMovimentation book={book} movimentBook={movimentBook}/>
           </div>
@@ -34,9 +36,15 @@ class Book extends Component{
         <div className="book-title">{book.title}</div>
         <div className="book-authors">
           {
-            book.authors.map((author) => {
-              return `${author}`
-            }).join(', ')
+            ('authors' in book) &&
+              book.authors.map((author) => {
+                return `${author}`
+              }).join(', ')
+          }
+
+          {
+            !('authors' in book) &&
+                <li>No authors</li>
           }
         </div>
       </div>

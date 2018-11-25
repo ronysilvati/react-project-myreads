@@ -15,6 +15,10 @@ class BookMovimentation extends Component{
 
   }
 
+  /**
+   * @description Allow user move a book in shelfs
+   * @param {object} - event
+   */
   moveBook  = (event) => {
     const book = this.props.book;
     this.props.movimentBook(book,event.target.value);
