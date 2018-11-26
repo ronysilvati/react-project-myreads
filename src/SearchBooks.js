@@ -61,16 +61,17 @@ class SearchBooks extends Component{
 
   render(){
     const {booksResultOfSearch} = this.state;
+    const {prepareBookshelfs,movimentBook} = this.props;
 
     return (
       <div className="search-books">
-        <SearchBooksBar handleSearchField={this.handleSearchField.bind(this)}/>
+        <SearchBooksBar handleSearchField={this.handleSearchField.bind(this)} prepareBookshelfs={prepareBookshelfs.bind(this)}/>
         <div className="search-books-results">
           <ol className="books-grid">
             {
               (booksResultOfSearch.length > 0) &&
               booksResultOfSearch.map((book)  => {
-                return <Book book={book} />
+                return <Book book={book} movimentBook={movimentBook.bind(this)} key={book.id}/>
               })
             }
 
@@ -87,7 +88,8 @@ class SearchBooks extends Component{
 }
 
 SearchBooks.propTypes = {
-
+  movimentBook: PropTypes.func.isRequired,
+  prepareBookshelfs: PropTypes.func.isRequired
 }
 
 export default SearchBooks;

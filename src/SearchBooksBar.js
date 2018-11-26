@@ -12,16 +12,17 @@ class SearchBooksBar extends Component{
   }
 
   render(){
-    this.handleSearchField = this.props.handleSearchField;
+
+    const {handleSearchField,prepareBookshelfs}  = this.props;
 
     return (
       <div className="search-books-bar">
         <Link to="/">
-          <button className="close-search">Close</button>
+          <button className="close-search" onClick={prepareBookshelfs}>Close</button>
         </Link>
 
         <div className="search-books-input-wrapper">
-          <input type="text" placeholder="Search by title or author" onKeyUp={this.handleSearchField}/>
+          <input type="text" placeholder="Search by title or author" onKeyUp={handleSearchField}/>
         </div>
       </div>
     );
@@ -30,7 +31,8 @@ class SearchBooksBar extends Component{
 }
 
 SearchBooksBar.propTypes = {
-  handleSearchField: PropTypes.func.isRequired
+  handleSearchField: PropTypes.func.isRequired,
+  prepareBookshelfs: PropTypes.func.isRequired
 };
 
 export default SearchBooksBar;

@@ -14,6 +14,16 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount(){
+    this.prepareBookshelfs();
+  }
+
+  prepareBookshelfs(){
+    this.setState(()  => ({
+      booksCurrentlyReading: [],
+      booksWantToRead: [],
+      booksRead: []
+    }));
+
     BooksAPI.getAll().then((books)  => {
 
       books.forEach((book)  => {
@@ -64,7 +74,7 @@ class BooksApp extends React.Component {
    */
   movimentBookIntoCorrectBookshelf(book,shelf){
     try{
-      console.log(shelf);
+
       if((book instanceof Object) && shelf){
         BooksAPI.update(book,shelf).then((data)  =>  {
           if(this.removeBookFromOldBookshelf(book)){
@@ -173,7 +183,7 @@ class BooksApp extends React.Component {
       <Router>
         <div className="app">
             <Route exact path="/search" render={()  => (
-              <SearchBooks />
+              <SearchBooks movimentBook={this.movimentBookOnBookshelf.bind(this)} prepareBookshelfs={this.prepareBookshelfs.bind(this)}/>
             )} />
 
             <Route exact path="/" render={({history})  => (
