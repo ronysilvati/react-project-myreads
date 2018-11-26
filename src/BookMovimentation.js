@@ -20,19 +20,19 @@ class BookMovimentation extends Component{
    * @param {object} - event
    */
   moveBook  = (event) => {
-    const book = this.props.book;
-    this.props.movimentBook(book,event.target.value);
+    this.props.movimentBook(this.props.book,event.target.value);
   }
 
   render(){
+    const {book} = this.props;
 
     return(
       <select onClick={this.moveBook}>
         <option value="move" disabled>Move to...</option>
-        <option value="currentlyReading" disabled={this.props.book.shelf === 'currentlyReading' ? true : null}>Currently Reading</option>
-        <option value="wantToRead" disabled={this.props.book.shelf === 'wantToRead' ? true : null}>Want to Read</option>
-        <option value="read" disabled={this.props.book.shelf === 'read' ? true : null}>Read</option>
-        <option value="none" disabled={this.props.book.shelf === 'none' ? true : null}>None</option>
+        <option value="currentlyReading" disabled={book.shelf === 'currentlyReading' ? true : null}>Currently Reading</option>
+        <option value="wantToRead" disabled={book.shelf === 'wantToRead' ? true : null}>Want to Read</option>
+        <option value="read" disabled={book.shelf === 'read' ? true : null}>Read</option>
+        <option value="none" disabled={!('shelf' in book) ? true : null}>None</option>
       </select>
     );
   }
