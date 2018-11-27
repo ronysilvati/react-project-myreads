@@ -38,9 +38,11 @@ class SearchBooks extends Component{
       BooksAPI.search(query)
         .then((books)  => {
           if(books instanceof Array){
+
             this.setState(()  => ({
               booksResultOfSearch: books
             }));
+
           }
           else{
             this.setState(()  => ({
@@ -61,17 +63,22 @@ class SearchBooks extends Component{
 
   render(){
     const {booksResultOfSearch} = this.state;
-    const {prepareBookshelfs,movimentBook} = this.props;
+    const {prepareBookshelfs,movimentBook,bookOnShelf,shelfs} = this.props;
 
     return (
       <div className="search-books">
-        <SearchBooksBar handleSearchField={this.handleSearchField.bind(this)} prepareBookshelfs={prepareBookshelfs.bind(this)}/>
+        <SearchBooksBar handleSearchField={this.handleSearchField.bind(this)}
+                        prepareBookshelfs={prepareBookshelfs.bind(this)}
+                        />
         <div className="search-books-results">
           <ol className="books-grid">
             {
               (booksResultOfSearch.length > 0) &&
               booksResultOfSearch.map((book)  => {
-                return <Book book={book} movimentBook={movimentBook.bind(this)} key={book.id}/>
+                return <Book book={book} movimentBook={movimentBook.bind(this)}
+                             key={book.id}
+                             bookOnShelf={bookOnShelf.bind(this)}
+                             shelfs={shelfs}/>
               })
             }
 
@@ -89,7 +96,9 @@ class SearchBooks extends Component{
 
 SearchBooks.propTypes = {
   movimentBook: PropTypes.func.isRequired,
-  prepareBookshelfs: PropTypes.func.isRequired
+  prepareBookshelfs: PropTypes.func.isRequired,
+  bookOnShelf: PropTypes.func.isRequired,
+  shelfs: PropTypes.array.isRequired
 }
 
 export default SearchBooks;

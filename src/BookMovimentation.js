@@ -6,6 +6,8 @@ import PropTypes from 'prop-types';
  * @constructor
  * @param {string} book - The book to be mounted on component instance
  * @param {function} movimentBook - The action to move a book
+ * @param {function} bookOnShelf - Verify if a book exists in a shelf
+ * @param {array} shelfs - A list of shelfs
  */
 class BookMovimentation extends Component{
 
@@ -24,15 +26,17 @@ class BookMovimentation extends Component{
   }
 
   render(){
-    const {book} = this.props;
+    const {shelfs,book,bookOnShelf} = this.props;
 
     return(
       <select onChange={this.moveBook}>
-        <option value="move" disabled>Move to...</option>
-        <option value="currentlyReading" disabled={book.shelf === 'currentlyReading' ? true : null}>Currently Reading</option>
-        <option value="wantToRead" disabled={book.shelf === 'wantToRead' ? true : null}>Want to Read</option>
-        <option value="read" disabled={book.shelf === 'read' ? true : null}>Read</option>
-        <option value="none" disabled={!('shelf' in book) ? true : null}>None</option>
+        <option value="">Move to...</option>
+        {
+          shelfs.map((shelf)  =>  {
+            return <option key={shelf.shelf} value={shelf.shelf} disabled={bookOnShelf(book,shelf.shelf)}>{shelf.title}</option>
+          })
+        }
+        <option value="none" disabled={!bookOnShelf(book,null)}>None</option>
       </select>
     );
   }
@@ -40,7 +44,9 @@ class BookMovimentation extends Component{
 
 BookMovimentation.propTypes = {
   book: PropTypes.object.isRequired,
-  movimentBook: PropTypes.func.isRequired
+  shelfs: PropTypes.array.isRequired,
+  movimentBook: PropTypes.func.isRequired,
+  bookOnShelf: PropTypes.func.isRequired,
 }
 
 export default BookMovimentation;

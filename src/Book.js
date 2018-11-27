@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import BookMovimentation from './BookMovimentation';
 
@@ -7,8 +7,9 @@ import BookMovimentation from './BookMovimentation';
  * @constructor
  * @param {string} book - The book to be mounted on component instance
  * @param {function} movimentBook - The action to move a book
+ * @param {function} bookOnShelf - Verify if a book exists into a shelf
  */
-class Book extends Component{
+class Book extends PureComponent{
 
   constructor(props){
 
@@ -21,7 +22,7 @@ class Book extends Component{
      * Through destructuring assignment, recover a list of books to be rendered
      */
 
-    const {book, movimentBook} = this.props;
+    const {book, movimentBook, shelfs, bookOnShelf} = this.props;
 
     return(
       <div className="book">
@@ -30,7 +31,7 @@ class Book extends Component{
               (book.imageLinks) && book.imageLinks.smallThumbnail
           }")` }}></div>
           <div className="book-shelf-changer">
-            <BookMovimentation book={book} movimentBook={movimentBook}/>
+            <BookMovimentation book={book} movimentBook={movimentBook} shelfs={shelfs} bookOnShelf={bookOnShelf}/>
           </div>
         </div>
         <div className="book-title">{book.title}</div>
@@ -56,7 +57,9 @@ class Book extends Component{
 
 Book.propTypes = {
   book: PropTypes.object.isRequired,
-  movimentBook: PropTypes.func.isRequired
+  movimentBook: PropTypes.func.isRequired,
+  shelfs: PropTypes.array.isRequired,
+  bookOnShelf: PropTypes.func.isRequired
 }
 
 export default Book;

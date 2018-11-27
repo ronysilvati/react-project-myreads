@@ -7,10 +7,24 @@ import {Route, Link, BrowserRouter as Router} from 'react-router-dom';
 import SearchBooks from './SearchBooks';
 
 class BooksApp extends React.Component {
+
+  shelfs = [
+    {
+      title:  'Currently Reading',
+      shelf:  'currentlyReading'
+    },
+    {
+      title:  'Want to Read',
+      shelf:  'wantToRead'
+    },
+    {
+      title:  'Read',
+      shelf:  'read'
+    }
+  ];
+
   state = {
-    booksCurrentlyReading: [],
-    booksWantToRead: [],
-    booksRead: []
+    books: []
   }
 
   componentDidMount(){
@@ -19,148 +33,16 @@ class BooksApp extends React.Component {
 
   prepareBookshelfs(){
     this.setState(()  => ({
-      booksCurrentlyReading: [],
-      booksWantToRead: [],
-      booksRead: []
+      books: []
     }));
 
     BooksAPI.getAll().then((books)  => {
-
-      books.forEach((book)  => {
-        this.insertBookIntoCorrectBookshelf(book);
-      })
-
+      this.setState(()  => ({
+        books: books
+      }));
     });
   }
 
-  /**
-   * @description Insert a book into correct bookshelf.
-   * This method is called when this application call a
-   * list of books from API.
-   * @param book
-   */
-  insertBookIntoCorrectBookshelf(book){
-    if(book instanceof Object){
-      try{
-        if(book.shelf === 'currentlyReading'){
-          this.setState((oldState)  => ({
-            booksCurrentlyReading: [...oldState.booksCurrentlyReading,book]
-          }));
-        }
-        else if(book.shelf === 'wantToRead'){
-          this.setState((oldState)  => ({
-            booksWantToRead: [...oldState.booksWantToRead,book]
-          }));
-        }
-        else if(book.shelf === 'read'){
-          this.setState((oldState)  => ({
-            booksRead: [...oldState.booksRead,book]
-          }));
-        }
-      }
-      catch(err){
-        console.log(err);
-      }
-    }
-  }
-
-  /**
-   * @description Insert the received book into correct bookshelf.
-   * Note that call the API of books, update the book and call
-   * again all books also would solve the problem, but the
-   * consum of resources would be not necessary.
-   * @param {object} - book
-   * @param {string} - shelf
-   */
-  movimentBookIntoCorrectBookshelf(book,shelf){
-    try{
-
-      if((book instanceof Object) && shelf){
-        BooksAPI.update(book,shelf).then((data)  =>  {
-          if(this.removeBookFromOldBookshelf(book)){
-            book.shelf = shelf;
-
-            if(book.shelf === 'currentlyReading'){
-              this.setState((oldState)  => ({
-                booksCurrentlyReading: [...oldState.booksCurrentlyReading,book]
-              }));
-            }
-            else if(book.shelf === 'wantToRead'){
-              this.setState((oldState)  => ({
-                booksWantToRead: [...oldState.booksWantToRead,book]
-              }));
-            }
-            else if(book.shelf === 'read'){
-              this.setState((oldState)  => ({
-                booksRead: [...oldState.booksRead,book]
-              }));
-            }
-          }
-        }).catch((err)  => {
-          console.log(err);
-        });
-      }
-    }
-    catch(err){
-      console.log(err);
-    }
-  }
-
-  /**
-   * @description Remove a book from a old bookshelf
-   * @param {object} - book
-   * @returns {boolean}
-   */
-  removeBookFromOldBookshelf(book){
-    if(book instanceof Object){
-      try{
-        if(book.shelf === 'currentlyReading'){
-          const newListOfCurrentlyReading = this.state.booksCurrentlyReading.filter((bookOnShelf) =>  {
-            if(bookOnShelf.id !== book.id){
-              return bookOnShelf;
-            }
-          });
-
-          this.setState(()  => ({
-            booksCurrentlyReading: newListOfCurrentlyReading
-          }));
-
-          return true;
-        }
-        else if(book.shelf === 'wantToRead'){
-          const newListOfWantToRead = this.state.booksWantToRead.filter((bookOnShelf) =>  {
-            if(bookOnShelf.id !== book.id){
-              return bookOnShelf;
-            }
-          });
-
-          this.setState(()  => ({
-            booksWantToRead: newListOfWantToRead
-          }));
-
-          return true;
-        }
-        else if(book.shelf === 'read'){
-          const newListOfRead = this.state.booksRead.filter((bookOnShelf) =>  {
-            if(bookOnShelf.id !== book.id){
-              return bookOnShelf;
-            }
-          });
-
-          this.setState(()  => ({
-            booksRead: newListOfRead
-          }));
-
-          return true;
-        }
-      }
-      catch(err){
-        console.log(err);
-      }
-    }
-
-    return false;
-  }
 
   /**
    * @description Send a book to new bookshelf
@@ -169,21 +51,55 @@ class BooksApp extends React.Component {
    */
   movimentBookOnBookshelf(book,toBookshelf){
     if((book instanceof Object) && (toBookshelf)){
-      this.movimentBookIntoCorrectBookshelf(book,toBookshelf);
+      BooksAPI.update(book,toBookshelf).then((data)  =>  {
+        this.prepareBookshelfs();
+      }).catch((err)  => {
+        console.log(err);
+      });
     }
+  }
+
+  /**
+   * This method verify if a book exists in a shelf
+   * @param book
+   * @param shelf
+   * @returns {boolean}
+   */
+  bookOnShelf(book,shelf){
+    const booksFinded = this.state.books.filter((bookOnList)  =>  {
+      if(shelf !== null){
+        if((bookOnList.id === book.id) && (bookOnList.shelf === shelf)){
+          return bookOnList;
+        }
+      }
+      else{
+        if((bookOnList.id === book.id)){
+          return bookOnList;
+        }
+      }
+    });
+
+    if(booksFinded.length > 0){
+      return true;
+    }
+
+    return false;
   }
 
   render() {
     /**
      * Through destructuring assignment, recover a list of books to be rendered
      */
-    let {booksCurrentlyReading,booksWantToRead,booksRead} = this.state;
+    let {books} = this.state;
 
     return (
       <Router>
         <div className="app">
             <Route exact path="/search" render={()  => (
-              <SearchBooks movimentBook={this.movimentBookOnBookshelf.bind(this)} prepareBookshelfs={this.prepareBookshelfs.bind(this)}/>
+              <SearchBooks movimentBook={this.movimentBookOnBookshelf.bind(this)}
+                           prepareBookshelfs={this.prepareBookshelfs.bind(this)}
+                           bookOnShelf={this.bookOnShelf.bind(this)}
+                           shelfs={this.shelfs}/>
             )} />
 
             <Route exact path="/" render={({history})  => (
@@ -193,9 +109,17 @@ class BooksApp extends React.Component {
                 </div>
                 <div className="list-books-content">
                   <div>
-                    <Bookshelf title="Currently Reading" books={booksCurrentlyReading} movimentBook={this.movimentBookOnBookshelf.bind(this)}/>
-                    <Bookshelf title="Want to Read" books={booksWantToRead} movimentBook={this.movimentBookOnBookshelf.bind(this)}/>
-                    <Bookshelf title="Read" books={booksRead} movimentBook={this.movimentBookOnBookshelf.bind(this)}/>
+                    {
+                      this.shelfs.map((shelf)  => {
+                        return <Bookshelf key={shelf.shelf}
+                                          shelfs={this.shelfs}
+                                          title={shelf.title}
+                                          shelf={shelf.shelf}
+                                          books={books}
+                                          movimentBook={this.movimentBookOnBookshelf.bind(this)}
+                                          bookOnShelf={this.bookOnShelf.bind(this)}/>
+                      })
+                    }
                   </div>
                 </div>
                 <div className="open-search">

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { Debounce } from 'react-throttle';
 
 /**
  * @description Represent a bar to search books
@@ -22,7 +23,11 @@ class SearchBooksBar extends Component{
         </Link>
 
         <div className="search-books-input-wrapper">
-          <input type="text" placeholder="Search by title or author" onKeyUp={handleSearchField}/>
+          <Debounce time="400" handler="onKeyUp">
+            <input type="text" placeholder="Search by title or author" onKeyUp={handleSearchField}/>
+          </Debounce>
+
+
         </div>
       </div>
     );
