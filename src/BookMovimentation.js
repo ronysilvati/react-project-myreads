@@ -27,7 +27,7 @@ class BookMovimentation extends Component{
     const {book} = this.props;
 
     return(
-      <select onClick={this.moveBook}>
+      <select onChange={this.moveBook}>
         <option value="move" disabled>Move to...</option>
         <option value="currentlyReading" disabled={book.shelf === 'currentlyReading' ? true : null}>Currently Reading</option>
         <option value="wantToRead" disabled={book.shelf === 'wantToRead' ? true : null}>Want to Read</option>
